@@ -89,6 +89,38 @@ class Engineer(Agent):
         elif self.model.phase == "data_use":
             self.model.knowledge_centralization += self.knowledge_level * 0.05
 
+class DataScientist(Agent):
+    """
+    Represents a data scientist involved in preparing and interpreting data
+    for algorithmic decision-making.
+
+    Attributes:
+        expertise (float): Ability to preprocess or interpret data well.
+        fairness_focus (float): Tendency to prioritize worker fairness in modeling.
+    """
+
+    def __init__(self, unique_id, model):
+        self.unique_id = unique_id
+        self.model = model
+        self.expertise = random.uniform(0.6, 1.0)
+        self.fairness_focus = random.uniform(0.0, 1.0)  # 0 = neutral, 1 = strongly fairness-oriented
+
+    def step(self):
+        """
+        - In 'goal_formation': May reduce centralization by advocating for transparency.
+        - In 'data_production': Boost data quality if fairness_focus is high.
+        - In 'data_use': Mitigate system influence if expert and fairness-oriented.
+        """
+        if self.model.phase == "goal_formation":
+            self.model.knowledge_centralization -= 0.02 * self.fairness_focus
+
+        elif self.model.phase == "data_production":
+            self.model.data_quality_modifier += 0.03 * self.expertise * self.fairness_focus
+
+        elif self.model.phase == "data_use":
+            # Influence interpretation quality and transparency
+            self.model.system_influence -= 0.05 * self.expertise * self.fairness_focus
+
 class Manager(Agent):
     """
     Represents a managerial agent responsible for decision-making and oversight.
@@ -145,7 +177,6 @@ class AlgorithmicSystem(Agent):
         """
         self.unique_id = unique_id
         self.model = model
-
         self.transparency = random.uniform(0.2, 0.8)
 
     def step(self):
