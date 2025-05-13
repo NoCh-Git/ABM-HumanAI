@@ -10,7 +10,7 @@ The model explores how managers, engineers, workers, and algorithmic systems int
 
 - **Goal formation**  
 - **Data production**  
-- **Data use**  
+- **Data analysis**  
 
 It investigates how knowledge centralization, worker resistance, and agency evolve over time under different conditions.
 
@@ -19,6 +19,7 @@ It investigates how knowledge centralization, worker resistance, and agency evol
 - Agent classes:
   - Workers (participation, resistance, agency)
   - Engineers (system setup, knowledge mediation)
+  - DataScientists (fairness focus, expertise)
   - Managers (control orientation, feedback acceptance)
   - Algorithmic systems (transparency, decision influence)
 - Simulation of a recurring management cycle

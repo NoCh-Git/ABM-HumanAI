@@ -3,9 +3,12 @@ import pandas as pd
 import os
 
 def main():
-    model = WorkflowModel(N_workers=20)
+    model = WorkflowModel()
 
-    num_steps = 30
+    num_steps = 1 # Set to 1 for testing. If you want to run the full simulation from this script
+    # and not from the GUI, set this to 300 or any other number. You have to run the visualization 
+    # script separately to see the results.
+    
     for _ in range(num_steps):
         model.step()
 
