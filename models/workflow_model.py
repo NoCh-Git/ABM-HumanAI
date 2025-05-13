@@ -8,7 +8,8 @@ class WorkflowModel(Model):
         self.num_ds_agents = N_ds_agents
         self.num_engineers = N_engineers
         self.num_managers = N_managers
-        self.num_agents = N_workers + N_ds_agents + N_engineers #exclude managers
+        #self.num_agents = N_workers + N_ds_agents + N_engineers #exclude managers
+        self.num_agents = N_workers
         self.all_agents = []
         self.agent_id = 0  # custom ID counter
 
@@ -71,7 +72,7 @@ class WorkflowModel(Model):
         elif self.phase_step < 2 * one_third:
             self.phase = "data_production"
         elif self.phase_step < self.total_steps:
-            self.phase = "data_use"
+            self.phase = "data_usage"
         else:
             self.phase_step = 0
             self.knowledge_centralization = 0
@@ -79,6 +80,7 @@ class WorkflowModel(Model):
             self.data_quality_modifier = 0
             self.phase = "goal_formation"
 
+        # print(f"Phase: {self.phase}")
         # Step all agents
         for agent in self.all_agents:
             agent.step()
@@ -86,6 +88,7 @@ class WorkflowModel(Model):
         # Collect metrics
         avg_resistance = sum(w.resistance for w in self.workers) / self.num_agents
         avg_agency = sum(w.agency_score for w in self.workers) / self.num_agents
+        avg_data_quality = sum(w.data_quality for w in self.workers) / self.num_agents
 
         # Log data (use global self.time)
         self.data.append({
@@ -95,6 +98,7 @@ class WorkflowModel(Model):
             "system_influence": self.system_influence,
             "average_resistance": avg_resistance,
             "average_agency": avg_agency,
+            "average_data_quality": avg_data_quality,
             "data_quality_modifier": self.data_quality_modifier
         })
 

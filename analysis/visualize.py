@@ -5,7 +5,7 @@ def plot_phases(ax, df):
     phase_colors = {
         "goal_formation": "#D0E1F9",
         "data_production": "#F9E0D9",
-        "data_use": "#E0F9D9"
+        "data_usage": "#E0F9D9"
     }
 
     start_idx = 0
@@ -29,7 +29,7 @@ def plot_simulation_results(df):
     Plot the simulation results from a DataFrame.
     Produces a two-panel plot: worker metrics and system metrics.
     """
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 6), sharex=True)
 
     plot_phases(ax1, df)
     ax1.plot(df["time"], df["average_agency"], label="Average Agency", color="blue")
@@ -45,6 +45,13 @@ def plot_simulation_results(df):
     ax2.set_xlabel("Time")
     ax2.legend()
     ax2.set_title("System & Managerial Control Over Time")
+
+    plot_phases(ax3, df)
+    ax3.plot(df["time"], df["average_data_quality"], label="Average Data Quality", color="red")
+    ax3.set_ylabel("Data Metrics")
+    ax3.set_xlabel("Time")
+    ax3.legend()
+    ax3.set_title("Data Metrics Over Time")
 
     plt.tight_layout()
     plt.show()

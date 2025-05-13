@@ -22,7 +22,6 @@ class Worker(Agent):
         """
         self.unique_id = unique_id
         self.model = model
-
         self.participation = random.uniform(0, 1)
         self.agency_score = 0
         self.resistance = 0
@@ -33,7 +32,7 @@ class Worker(Agent):
         Define behavior for each simulation step, based on the current model phase:
         - In 'goal_formation': high participation boosts agency.
         - In 'data_production': participation affects data quality and resistance.
-        - In 'data_use': transparency influences perceived fairness and resistance.
+        - In 'data_usage': transparency influences perceived fairness and resistance.
         """
         # Update agency and resistance based on participation and model phase
         if self.model.phase == "goal_formation":
@@ -46,7 +45,7 @@ class Worker(Agent):
             else:
                 self.data_quality = random.uniform(0.1, 0.6)
                 self.resistance += 1
-        elif self.model.phase == "data_use":
+        elif self.model.phase == "data_usage":
             if self.model.system.transparency > 0.5:
                 self.agency_score += 0.2
             else:
@@ -80,13 +79,13 @@ class Engineer(Agent):
         Engineer behavior across phases:
         - In 'goal_formation': gain more system knowledge.
         - In 'data_production': improve data quality based on sensitivity.
-        - In 'data_use': increase centralization by interpreting results for others.
+        - In 'data_usage': increase centralization by interpreting results for others.
         """
         if self.model.phase == "goal_formation":
             self.knowledge_level += 0.05
         elif self.model.phase == "data_production":
             self.model.data_quality_modifier += self.data_sensitivity * 0.05
-        elif self.model.phase == "data_use":
+        elif self.model.phase == "data_usage":
             self.model.knowledge_centralization += self.knowledge_level * 0.05
 
 class DataScientist(Agent):
@@ -103,21 +102,23 @@ class DataScientist(Agent):
         self.unique_id = unique_id
         self.model = model
         self.expertise = random.uniform(0.6, 1.0)
-        self.fairness_focus = random.uniform(0.0, 1.0)  # 0 = neutral, 1 = strongly fairness-oriented
-
+        #self.fairness_focus = random.uniform(0.0, 1.0)  # 0 = neutral, 1 = strongly fairness-oriented
+        self.fairness_focus = 1  # Set to a fixed value for testing
     def step(self):
         """
         - In 'goal_formation': May reduce centralization by advocating for transparency.
         - In 'data_production': Boost data quality if fairness_focus is high.
-        - In 'data_use': Mitigate system influence if expert and fairness-oriented.
+        - In 'data_usage': Mitigate system influence if expert and fairness-oriented.
         """
         if self.model.phase == "goal_formation":
             self.model.knowledge_centralization -= 0.02 * self.fairness_focus
 
         elif self.model.phase == "data_production":
             self.model.data_quality_modifier += 0.03 * self.expertise * self.fairness_focus
-
-        elif self.model.phase == "data_use":
+        # Help engineers by boosting their data sensitivity
+            for eng in self.model.engineers:
+                eng.data_sensitivity += 0.01  # small boost
+        elif self.model.phase == "data_usage":
             # Influence interpretation quality and transparency
             self.model.system_influence -= 0.05 * self.expertise * self.fairness_focus
 
@@ -149,11 +150,11 @@ class Manager(Agent):
         """
         Manager behavior by phase:
         - In 'goal_formation': exert control in framing objectives.
-        - In 'data_use': influence how decisions are interpreted based on transparency and feedback tolerance.
+        - In 'data_usage': influence how decisions are interpreted based on transparency and feedback tolerance.
         """
         if self.model.phase == "goal_formation":
             self.model.knowledge_centralization += self.control_preference * 0.1
-        elif self.model.phase == "data_use":
+        elif self.model.phase == "data_usage":
             if self.model.system.transparency < 0.5:
                 self.model.knowledge_centralization += 0.1
             else:
@@ -177,15 +178,19 @@ class AlgorithmicSystem(Agent):
         """
         self.unique_id = unique_id
         self.model = model
-        self.transparency = random.uniform(0.2, 0.8)
+        #self.transparency = random.uniform(0.2, 0.8)
+        self.transparency = 1  # Set to a fixed value for testing
 
     def step(self):
         """
-        In 'data_use' phase:
+        In 'data_usage' phase:
         - The system exerts more influence if it is opaque.
         - Reduces worker agency when transparency is low.
         """
-        if self.model.phase == "data_use":
+        if self.model.phase == "data_production":
+            self.data_quality = random.uniform(0.7, 1.0) * (1 + self.model.data_quality_modifier)
+
+        if self.model.phase == "data_usage":
             self.model.system_influence += (1 - self.transparency) * 0.1
             for w in self.model.workers:
                 if self.transparency < 0.5:
