@@ -26,6 +26,22 @@ It investigates how knowledge centralization, worker resistance, and agency evol
 - Data collection on key fairness and power metrics
 - Built using the [Mesa ABM framework](https://mesa.readthedocs.io/en/stable/)
 
+## Workflow
+After installing the dependencies, run the following command [where the project is located] to start the simulation:
+```bash
+python tkinter_app.py
+```
+This will open a GUI window displaying the features of the simulation. You can interact with the simulation by clicking on the buttons and sliders to change the conditions and run the simulation. Press run to see the plots.
+
+Screenshots of the GUI and plots are included below:
+
+
+<img src="images/Screenshot_TKinter.png" width="300">
+
+<img src="images/Screenshot_Plots.png" width="500">
+
+
+
 ## Requirements
 
 - Python 3.7+
